@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHK Comment Remover</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/media/logo.png">
+    <link rel="apple-touch-icon" href="assets/media/logo.png">
+
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Clean up your AutoHotkey scripts by removing comments while keeping the code intact." >
+    <meta name="keywords" content="AutoHotkey, ahk comment remover, ahk comment remover wesbite, AHK, comment remover, code cleaner, script tools, fr0st-iwnl, fr0st, fr0st.xyz, frost-iwnl, frostiwnl">
+    <meta name="author" content="fr0st-iwnl" >
+    <meta property="og:title" content="AHK Comment Remover" >
+    <meta property="og:url" content="https://ahkcommentremover.netlify.app" >
+    <meta property="og:site_name" content="ahkcommentremover.netlify.app" >
+    <meta property="og:description" content="Clean up your AutoHotkey scripts by removing comments while keeping the code intact." >
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AutoHotkey Comment Remover</h1>
+            <p class="subtitle">Clean up your AutoHotkey scripts by removing comments while keeping the code intact.</p>
+        </header>
+
+        <div class="editor-grid">
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span class="editor-title">Input Code</span>
+                    <button class="copy-btn" onclick="copyToClipboard('inputCode')">Copy</button>
+                </div>
+                <textarea id="inputCode" placeholder="Paste your AutoHotkey code here..."></textarea>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span class="editor-title">Output Code</span>
+                    <button class="copy-btn" onclick="copyToClipboard('outputCode')">Copy</button>
+                </div>
+                <textarea id="outputCode" readonly placeholder="Your code without comments will appear here..."></textarea>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="process-button" onclick="removeComments()">
+                <span>Remove Comments</span>
+            </button>
+        </div>
+
+        <div class="other-projects">
+            <h2 class="projects-title">You might like these:</h2>
+            <div class="projects">
+                <a href="https://github.com/fr0st-iwnl/WinMacros" target="_blank" class="project-card">
+                    <div class="project-title">WinMacros</div>
+                    <div class="project-description">
+                        Custom Windows macros for faster tasks and easy system control.
+                    </div>
+                </a>
+                <a href="https://github.com/fr0st-iwnl/WinConfigs" target="_blank" class="project-card">
+                    <div class="project-title">WinConfigs</div>
+                    <div class="project-description">
+                        A script to simplify Windows setup by automating software installation and system tweaks.
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="made-by">
+                Made with <span class="heart">❤️</span> by 
+                <a href="https://github.com/fr0st-iwnl" target="_blank">fr0st-iwnl</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function removeComments() {
+            const input = document.getElementById('inputCode').value;
+            const output = document.getElementById('outputCode');
+            
+            // Process line by line
+            let result = input.split('\n').map(line => {
+                // If it's a completely empty line, preserve it
+                if (line.trim() === '') {
+                    return line;
+                }
+
+                // Find the position of the first semicolon that's not inside a string
+                let inString = false;
+                let stringChar = '';
+                let commentPos = -1;
+                
+                for (let i = 0; i < line.length; i++) {
+                    if ((line[i] === '"' || line[i] === "'") && 
+                        (i === 0 || line[i-1] !== '`')) {
+                        if (!inString) {
+                            inString = true;
+                            stringChar = line[i];
+                        } else if (line[i] === stringChar) {
+                            inString = false;
+                        }
+                    } else if (line[i] === ';' && !inString) {
+                        commentPos = i;
+                        break;
+                    }
+                }
+                
+                // If the line starts with a comment (after trimming), return null
+                const trimmedLine = line.trimStart();
+                if (trimmedLine.startsWith(';')) {
+                    return null;
+                }
+                return commentPos !== -1 ? line.substring(0, commentPos).trimEnd() : line;
+            })
+            .filter(line => line !== null)  // Remove comment-only lines
+            .join('\n');
+
+            // Remove multi-line comments (/* */)
+            result = result.replace(/\/\*[\s\S]*?\*\//g, '');
+
+            output.value = result;
+        }
+
+        // Add copy to clipboard functionality
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 1500);
+        }
+    </script>
+</body>
+</html> 
