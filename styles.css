@@ -93,6 +93,32 @@
             transition: border-color 0.2s ease;
         }
 
+        /* Custom scrollbar styling */
+        textarea::-webkit-scrollbar {
+            height: 8px;
+            cursor: pointer;
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+            border-radius: 8px;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
+            border-radius: 8px;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+            cursor: default;
+        }
+
+        textarea::-webkit-scrollbar-thumb:active {
+            cursor: default;
+        }
+
         textarea:focus {
             outline: none;
             border-color: var(--primary);
@@ -100,8 +126,11 @@
         }
 
         .button-container {
-            text-align: center;
-            margin-bottom: 6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
         }
 
         .process-button {
@@ -285,4 +314,93 @@
                 margin: 0 auto;
                 max-width: 100%;
             }
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background: var(--bg-darker);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .toggle-container:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* NEW badge styles
+        .toggle-label::before {
+            content: "NEW";
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #94a3b8;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        */
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .3s;
+            border-radius: 26px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text);
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }

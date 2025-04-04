@@ -10,13 +10,13 @@
     <link rel="apple-touch-icon" href="assets/media/logo.png">
 
     <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="Clean up your AutoHotkey scripts by removing comments while keeping the code intact." >
+    <meta name="description" content="Clean up your AutoHotkey scripts by easily removing or adding comments." >
     <meta name="keywords" content="AutoHotkey, ahk comment remover, ahk comment remover wesbite, AHK, comment remover, code cleaner, script tools, fr0st-iwnl, fr0st, fr0st.xyz, frost-iwnl, frostiwnl">
     <meta name="author" content="fr0st-iwnl" >
     <meta property="og:title" content="AHK Comment Remover" >
     <meta property="og:url" content="https://ahkcommentremover.netlify.app" >
     <meta property="og:site_name" content="ahkcommentremover.netlify.app" >
-    <meta property="og:description" content="Clean up your AutoHotkey scripts by removing comments while keeping the code intact." >
+    <meta property="og:description" content="Clean up your AutoHotkey scripts by easily removing or adding comments." >
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +30,7 @@
     <div class="container">
         <header class="header">
             <h1>AutoHotkey Comment Remover</h1>
-            <p class="subtitle">Clean up your AutoHotkey scripts by removing comments while keeping the code intact.</p>
+            <p class="subtitle">Clean up your AutoHotkey scripts by easily removing or adding comments.</p>
         </header>
 
         <div class="editor-grid">
@@ -52,8 +52,15 @@
         </div>
 
         <div class="button-container">
-            <button class="process-button" onclick="removeComments()">
-                <span>Remove Comments</span>
+            <div class="toggle-container">
+                <label class="toggle-label">Mode:</label>
+                <label class="switch">
+                    <input type="checkbox" id="modeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <button class="process-button" onclick="processCode()">
+                <span id="processButtonText">Remove Comments</span>
             </button>
         </div>
 
@@ -86,10 +93,40 @@
     </footer>
 
     <script>
-        function removeComments() {
-            const input = document.getElementById('inputCode').value;
-            const output = document.getElementById('outputCode');
+        const modeToggle = document.getElementById('modeToggle');
+        const processButtonText = document.getElementById('processButtonText');
+        const inputCode = document.getElementById('inputCode');
+        const outputCode = document.getElementById('outputCode');
+
+        // Set initial state
+        updateUIState(modeToggle.checked);
+
+        modeToggle.addEventListener('change', function() {
+            updateUIState(this.checked);
+        });
+
+        function updateUIState(isRemoveMode) {
+            processButtonText.textContent = isRemoveMode ? 'Add Comments' : 'Remove Comments';
+            inputCode.placeholder = isRemoveMode ? 
+                'Paste your code without comments here...' : 
+                'Paste your AutoHotkey code here...';
+            outputCode.placeholder = isRemoveMode ? 
+                'Your code with comments will appear here...' : 
+                'Your code without comments will appear here...';
+        }
+
+        function processCode() {
+            const isRemoveMode = modeToggle.checked;
+            const input = inputCode.value;
             
+            if (isRemoveMode) {
+                addComments(input);
+            } else {
+                removeComments(input);
+            }
+        }
+
+        function removeComments(input) {
             // Process line by line
             let result = input.split('\n').map(line => {
                 // If it's a completely empty line, preserve it
@@ -130,7 +167,27 @@
             // Remove multi-line comments (/* */)
             result = result.replace(/\/\*[\s\S]*?\*\//g, '');
 
-            output.value = result;
+            outputCode.value = result;
+        }
+
+        function addComments(input) {
+            // Process line by line
+            let result = input.split('\n').map(line => {
+                // Skip empty lines
+                if (line.trim() === '') {
+                    return line;
+                }
+
+                // Skip lines that are already comments
+                if (line.trimStart().startsWith(';')) {
+                    return line;
+                }
+
+                // Add semicolon at the start of the line
+                return `; ${line}`;
+            }).join('\n');
+
+            outputCode.value = result;
         }
 
         // Add copy to clipboard functionality
