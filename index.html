@@ -64,6 +64,7 @@
             </button>
         </div>
 
+        <!---
         <div class="other-projects">
             <h2 class="projects-title">You might like these:</h2>
             <div class="projects">
@@ -82,128 +83,17 @@
             </div>
         </div>
     </div>
+    --->
 
     <footer class="footer">
         <div class="footer-content">
             <div class="made-by">
                 Made with <span class="heart">❤️</span> by 
-                <a href="https://github.com/fr0st-iwnl" target="_blank">fr0st-iwnl</a>
+                <a href="https://github.com/fr0st-iwnl" target="_blank">fr0st</a>
             </div>
         </div>
     </footer>
 
-    <script>
-        const modeToggle = document.getElementById('modeToggle');
-        const processButtonText = document.getElementById('processButtonText');
-        const inputCode = document.getElementById('inputCode');
-        const outputCode = document.getElementById('outputCode');
-
-        // Set initial state
-        updateUIState(modeToggle.checked);
-
-        modeToggle.addEventListener('change', function() {
-            updateUIState(this.checked);
-        });
-
-        function updateUIState(isRemoveMode) {
-            processButtonText.textContent = isRemoveMode ? 'Add Comments' : 'Remove Comments';
-            inputCode.placeholder = isRemoveMode ? 
-                'Paste your code without comments here...' : 
-                'Paste your AutoHotkey code here...';
-            outputCode.placeholder = isRemoveMode ? 
-                'Your code with comments will appear here...' : 
-                'Your code without comments will appear here...';
-        }
-
-        function processCode() {
-            const isRemoveMode = modeToggle.checked;
-            const input = inputCode.value;
-            
-            if (isRemoveMode) {
-                addComments(input);
-            } else {
-                removeComments(input);
-            }
-        }
-
-        function removeComments(input) {
-            // Process line by line
-            let result = input.split('\n').map(line => {
-                // If it's a completely empty line, preserve it
-                if (line.trim() === '') {
-                    return line;
-                }
-
-                // Find the position of the first semicolon that's not inside a string
-                let inString = false;
-                let stringChar = '';
-                let commentPos = -1;
-                
-                for (let i = 0; i < line.length; i++) {
-                    if ((line[i] === '"' || line[i] === "'") && 
-                        (i === 0 || line[i-1] !== '`')) {
-                        if (!inString) {
-                            inString = true;
-                            stringChar = line[i];
-                        } else if (line[i] === stringChar) {
-                            inString = false;
-                        }
-                    } else if (line[i] === ';' && !inString) {
-                        commentPos = i;
-                        break;
-                    }
-                }
-                
-                // If the line starts with a comment (after trimming), return null
-                const trimmedLine = line.trimStart();
-                if (trimmedLine.startsWith(';')) {
-                    return null;
-                }
-                return commentPos !== -1 ? line.substring(0, commentPos).trimEnd() : line;
-            })
-            .filter(line => line !== null)  // Remove comment-only lines
-            .join('\n');
-
-            // Remove multi-line comments (/* */)
-            result = result.replace(/\/\*[\s\S]*?\*\//g, '');
-
-            outputCode.value = result;
-        }
-
-        function addComments(input) {
-            // Process line by line
-            let result = input.split('\n').map(line => {
-                // Skip empty lines
-                if (line.trim() === '') {
-                    return line;
-                }
-
-                // Skip lines that are already comments
-                if (line.trimStart().startsWith(';')) {
-                    return line;
-                }
-
-                // Add semicolon at the start of the line
-                return `; ${line}`;
-            }).join('\n');
-
-            outputCode.value = result;
-        }
-
-        // Add copy to clipboard functionality
-        function copyToClipboard(elementId) {
-            const textarea = document.getElementById(elementId);
-            textarea.select();
-            document.execCommand('copy');
-            
-            // Visual feedback
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'Copied!';
-            setTimeout(() => {
-                button.textContent = originalText;
-            }, 1500);
-        }
-    </script>
+    <script src="script.js" defer></script>
 </body>
 </html> 
